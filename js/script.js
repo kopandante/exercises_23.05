@@ -1,8 +1,6 @@
 (() => {
 
-    let lsUsers = localStorage.getItem('users');
-    if (localStorage.getItem('loggedIn')) window.location = 'index.html';
-    if (!lsUsers) window.location = 'register.html';
+    if (!localStorage.getItem('loggedIn')) window.location = 'auth.html';
 
     let data = {
         'h4': document.querySelector('.title'),
