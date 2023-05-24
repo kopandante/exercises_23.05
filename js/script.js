@@ -15,7 +15,6 @@
     data['p'].value = 'Котик очень нуждается в поглаживании';
     data['img'].value = 'https://www.purina.ru/sites/default/files/2021-06/Getting-A-Cat_4f6f9e2c-d6f9-434e-9225-5da106a1c1a8_1_0_3.jpg';
 
-    console.log(typeof Array(3));
     let create = (elements, parent) => {
         if (Array.isArray(elements)) {
             elements.forEach(el => create(el, parent));
@@ -33,8 +32,7 @@
         }
     }
 
-    let add = (el) => {
-        el.preventDefault();
+    let create_card = () => {
         let card = create('div', document.querySelector('.row'));
         create(['h4', 'img', 'p'], card);
         let buttonInline = create('div', card);
@@ -42,15 +40,25 @@
 
         let b1 = card.querySelector('button:first-of-type');
         b1.textContent = 'Delete';
-        b1.addEventListener('click', () => { card.remove()} );
+        b1.addEventListener('click', (evt => del(card, evt)));
 
         let b2 = card.querySelector('button:last-of-type');
         b2.textContent = 'Edit';
         b2.addEventListener('click', (evt => load(card, evt)));
 
+    }
+    let add = (el) => {
+        if (el) el.preventDefault();
+        create_card();
+        save_to_ls();
         resetForm();
     }
 
+    let del = (card, evt) => {
+        evt.preventDefault();
+        card.remove()
+        save_to_ls();
+    }
     let load = (card, evt) => {
         evt.preventDefault();
 
@@ -75,6 +83,7 @@
         current['p'].textContent = data['p'].value;
         current['img'].src = data['img'].value;
 
+        save_to_ls();
         resetForm();
     }
 
@@ -91,5 +100,34 @@
 
 
     data['submit'].addEventListener('click', add);
+
+    let save_to_ls = () => {
+        let cards = document.querySelectorAll('.row > div');
+        let result = [];
+        for (let card of cards) {
+            console.log(card);
+            let card_data = {
+                'title': card.querySelector('h4').textContent,
+                'description': card.querySelector('p').textContent,
+                'imageUrl': card.querySelector('img').src,
+            }
+            result.push(card_data);
+        }
+        localStorage.setItem('todo_items', JSON.stringify(result));
+    }
+
+    let load_from_ls = () => {
+        let ls_data = JSON.parse(localStorage.getItem('todo_items'));
+        console.log(ls_data);
+        for (let item of ls_data) {
+            data['h4'].value = item['title'];
+            data['p'].value = item['description'];
+            data['img'].value = item['imageUrl'];
+            create_card();
+            resetForm();
+        }
+    }
+
+    load_from_ls();
 
 })();
