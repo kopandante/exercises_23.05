@@ -40,17 +40,19 @@
 
         let b1 = card.querySelector('button:first-of-type');
         b1.textContent = 'Delete';
-        b1.addEventListener('click', () => { this.closest('.row > div').remove()} );
+        b1.addEventListener('click', () => { card.remove()} );
 
         let b2 = card.querySelector('button:last-of-type');
         b2.textContent = 'Edit';
-        b2.addEventListener('click', load);
+        b2.addEventListener('click', (evt => load(card, evt)));
 
         resetForm();
     }
 
-    let load =  () => {
-        current['card'] = this.closest('.row > div');
+    let load = (card, evt) => {
+        evt.preventDefault();
+
+        current['card'] = card;
         current['h4'] = current['card'].querySelector('h4');
         current['p'] = current['card'].querySelector('p');
         current['img'] = current['card'].querySelector('img');
